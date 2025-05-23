@@ -120,11 +120,8 @@ GO
 
 
 INSERT INTO Dispositivos (modelo, proveedor, descripcion, estado) VALUES
-
 ('FMC650', 'Teltonika FMC650', 'Incorpora conectividad 4G LTE Cat 1 con módulo GNSS de alta precisión. Comunicación rápida y confiable.', 1),
-
 ('FMC920', 'Teltonika FMC920', 'Localizador GPS avanzado para monitoreo de activos móviles. Compatible con múltiples plataformas.', 1),
-
 ('FMC150', 'Teltonika FMC150', 'Solución robusta para gestión de flotas. Alta eficiencia y seguridad en logística.', 0);
 
 GO
