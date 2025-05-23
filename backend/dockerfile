@@ -1,0 +1,32 @@
+FROM python:3.11-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Paso 1: instalar dependencias necesarias
+RUN apt-get update && apt-get install -y \
+    gnupg2 curl apt-transport-https \
+    gcc g++ unixodbc-dev \
+    && apt-get clean
+
+# Paso 2: eliminar paquetes que generan conflicto
+RUN apt-get remove -y \
+    libodbc2 \
+    libodbcinst2 \
+    unixodbc-common || true
+
+# Paso 3: agregar repositorio de Microsoft 
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/microsoft.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/debian/11/prod bullseye main" > /etc/apt/sources.list.d/mssql-release.list
+
+# Paso 4: instalar el driver ODBC de SQL Server
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
+
+# Paso 5: configuración del proyecto
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY dispositivos/ ./dispositivos
+
+CMD ["uvicorn", "dispositivos.main:app", "--host", "0.0.0.0", "--port", "8000"]
